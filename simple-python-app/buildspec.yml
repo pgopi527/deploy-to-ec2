@@ -1,4 +1,3 @@
-
 version: 0.2
 
 env:
@@ -6,26 +5,27 @@ env:
     DOCKER_URL: "/first-image/docker-registry/url"
     DOCKER_USERNAME: "/first-image/docker-registry/username"
     DOCKER_PASSWORD: "/first-image/docker-registry/password"
+
 phases:
   install:
     runtime-versions:
-      python: 3.11
+      python: 3.14
+
   pre_build:
     commands:
-      - echo "Installing dependencies..."
-      - pip install -r simple-python-app/requirements.txt
+      - echo $DOCKER_URL
+      - echo $DOCKER_USERNAME
+      - pip install -r day-14/simple-python-app/requirements.txt
       - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin $DOCKER_URL
 
   build:
     commands:
-      - echo "Running tests..."
-      - cd simple-python-app/
-      - echo "Building Docker image..."
-      - docker build -t "pgopi527/third:latest" .
-      - docker push "pgopi527/third:latest"
+      - cd simple-python-app
+      - echo "Build Docker image"
+      - docker build -t "pgopi527/third" .
+      - docker push "pgopi527/third"
+
+  post_build:
     commands:
-      - echo "Build completed successfully!"
-artifacts:
-  files:
-    - '**/*'
-  base-directory: ../simple-python-app
+      - echo "Build Succeeded"
+
